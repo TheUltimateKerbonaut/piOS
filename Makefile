@@ -27,5 +27,5 @@ transfer:
 	../raspbootin/raspbootcom/raspbootcom /dev/ttyUSB0 ~/piOS/kernel8.img 
 	#java -jar ../Raspbootin64Client-master/Raspbootin64Client.jar /dev/ttyUSB0 ../piOS/kernel8.img
 
-emulate:
+emulate: kernel8.img
 	qemu-system-aarch64 -M raspi3 -serial stdio -kernel kernel8.img

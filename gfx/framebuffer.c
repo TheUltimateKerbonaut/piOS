@@ -1,10 +1,11 @@
 #include "framebuffer.h"
 #include "../io/uart.h"
 #include "../mbox.h"
+#include "charset.h"
 
 #define WIDTH 640
 #define HEIGHT 480
-#define DEPTH 16
+#define DEPTH 32
 
 int initFramebuffer()
 {
@@ -52,19 +53,20 @@ int initFramebuffer()
 
     mailbox[34] = 0;
 
-    if (sendMailbox(ArmToVC) != 0 && mailbox[20] == DEPTH && mailbox[28] !=0) // If depth is 32 and the pointer is set
+    if (sendMailbox(ArmToVC) != 0 && mailbox[20] == DEPTH && mailbox[28] !=0) // If depth is right and the pointer is set
     {
         mailbox[28] &= 0x3FFFFFFF; // convert GPU address to ARM address
-        resolutionX = mailbox[5];   
-        resolutionY = mailbox[6];   
+        fbResolutionX = mailbox[5];   
+        fbResolutionY = mailbox[6];   
         fbPitch = mailbox[33];
         fbAddress = (void*)((uint64_t)mailbox[28]);
+        fbColourDepth = mailbox[20];
         uart_printi("Successfully constructed framebuffer with resolution ");
-        uart_dec(WIDTH);
+        uart_dec(fbResolutionX);
         uart_printi("x");
-        uart_dec(HEIGHT);
+        uart_dec(fbResolutionY);
         uart_printi(" with depth ");
-        uart_dec(DEPTH);
+        uart_dec(fbColourDepth);
         uart_print("");
     } else 
     {
@@ -78,9 +80,16 @@ int initFramebuffer()
         return 1;
     }
 
-    for (int x = 0; x < resolutionX; ++x)
-        for (int y = 0; y < resolutionY; ++y)
-        fbSetPixel(x, y, 0x11111111);
+    for (int x = 0; x < fbResolutionX; ++x)
+        for (int y = 0; y < fbResolutionY; ++y)
+        fbSetPixel(x, y, getColour(0, 0, 0)); // 0x11111111
+
+    fbTextRows = fbResolutionY / CHAR_HEIGHT;
+    fbTextColumns = fbResolutionX / CHAR_WIDTH;
+    fbTextX = 0;
+    fbTextY = 0;
+
+    fbWriteString("Hello world!");
 
     return 0;
 
@@ -91,4 +100,45 @@ void fbSetPixel(int x, int y, uint32_t colour)
     uint32_t offset = (y * fbPitch) + (x * 4);
     volatile uint32_t* framePtr = (uint32_t*)(fbAddress + offset);
     *framePtr = colour;
+}
+
+void fbWriteChar(char character)
+{
+    const uint32_t WHITE = getColour(255, 255, 255);
+    const uint32_t BLACK = getColour(0, 0, 0);
+
+    const uint8_t* bitmap = font(character);
+
+    if (character == '\n')
+    {
+        fbTextX = 0;
+        fbTextY++;
+    }
+
+    for (int w = 0; w < CHAR_WIDTH; ++w)
+    {
+        for (int h = 0; h < CHAR_HEIGHT; ++h)
+        {
+            uint8_t mask = 1 << (w);
+            if (bitmap[h] & mask)
+                fbSetPixel(fbTextX * CHAR_WIDTH + w, fbTextY * CHAR_HEIGHT + h, WHITE);
+            else
+                fbSetPixel(fbTextX * CHAR_WIDTH + w, fbTextY * CHAR_HEIGHT + h, BLACK);
+        }
+    }
+
+    fbTextX++;
+
+    if (fbTextX >= fbTextColumns) 
+    {
+        fbTextX = 0;
+        fbTextY++;   
+    }
+}
+
+void fbWriteString(char* string)
+{
+    for (size_t i = 0; string[i] != '\0'; i ++)
+		fbWriteChar((unsigned char)string[i]);
+	fbWriteChar("\n");
 }
