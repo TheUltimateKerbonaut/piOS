@@ -1,9 +1,11 @@
 #include <stddef.h>
 #include <stdint.h>
  
-#include "io/mbox.h"
+#include "mbox.h"
 #include "io/uart.h"
 #include "io/atag.h"
+
+#include "gfx/framebuffer.h"
 
 #define RASPBERRY_PI 3
 
@@ -27,18 +29,6 @@ void kernel_main(uint64_t atag_ptr32, uint64_t x1, uint64_t x2, uint64_t x3)
 		uart_hex(mailbox[5], 0);
 		uart_print("");
 	}
-
-	createSizeMailbox();
-	uint32_t sizeMailbox = sendMailbox(ArmToVC);
-	if (sizeMailbox == 0) uart_print("Mailbox error!");
-	else
-	{
-		uart_printi("Width: ");
-		uart_dec(mailbox[5]);
-		uart_printi("\r\nHeight: ");
-		uart_dec(mailbox[6]);
-		uart_print("");
-	}
 	
 	uart_print("");
 
@@ -54,9 +44,14 @@ void kernel_main(uint64_t atag_ptr32, uint64_t x1, uint64_t x2, uint64_t x3)
 		uart_dec(getPageSize((struct atag*)atag_ptr32));
 		uart_print("\r\n");
 	}
-	
 
-	uart_print("Finished");
+	int framebufferStatus = initFramebuffer();
+	if (framebufferStatus != 0) 
+	{
+		uart_print("\r\nCritical error with framebuffer!");
+		uart_printi("Error code: ");
+		uart_hex(framebufferStatus, 1);
+	}
 
 	while (1)  //{ uart_print("Hello, kernel World!\r\n"); }
 		uart_putc(uart_getc());

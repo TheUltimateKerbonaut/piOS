@@ -1,6 +1,6 @@
 #SRCS = $(wildcard *.c)
 #OBJS = $(SRCS:.c=.o)
-SRCS := $(wildcard *.c io/*.c)
+SRCS := $(wildcard *.c io/*.c gfx/*.c)
 OBJS := $(SRCS:.c=.o)
 CFLAGS = -Wall -O2 -ffreestanding -nostdlib -nostartfiles
 
@@ -18,7 +18,7 @@ kernel8.img: boot.o $(OBJS)
 	aarch64-elf-objcopy -O binary kernel8.elf kernel8.img
 
 clean:
-	rm kernel8.elf kernel8.img *.o io/*.o >/dev/null 2>/dev/null || true
+	rm kernel8.elf kernel8.img *.o io/*.o gfx/*.o >/dev/null 2>/dev/null || true
 
 run:
 	qemu-system-aarch64 -M raspi3 -kernel kernel8.img -serial stdio
