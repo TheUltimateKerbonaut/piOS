@@ -1,5 +1,8 @@
 #include "stdint.h"
 
+#ifndef ATAG_H
+#define ATAG_H
+
 typedef enum
 {
     NONE = 0x00000000,
@@ -37,3 +40,5 @@ struct atag_core* a_core;
 int populateFromAtag(struct atag* tag);
 uint32_t getMemorySize(struct atag* tag);
 uint32_t getPageSize(struct atag* tag);
+
+#endif

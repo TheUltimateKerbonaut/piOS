@@ -22,5 +22,6 @@ uint32_t getMemorySize(struct atag* tag)
 
 uint32_t getPageSize(struct atag* tag)
 {
-    return a_core->pageSize;
+    //return a_core->pageSize;
+    return (a_core->pageSize == 0) ? 4096 : a_core->pageSize;
 }

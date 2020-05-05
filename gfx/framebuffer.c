@@ -113,6 +113,7 @@ void fbWriteChar(char character)
     {
         fbTextX = 0;
         fbTextY++;
+        return;
     }
 
     for (int w = 0; w < CHAR_WIDTH; ++w)
@@ -140,5 +141,5 @@ void fbWriteString(char* string)
 {
     for (size_t i = 0; string[i] != '\0'; i ++)
 		fbWriteChar((unsigned char)string[i]);
-	fbWriteChar("\n");
+	fbWriteChar('\n');
 }

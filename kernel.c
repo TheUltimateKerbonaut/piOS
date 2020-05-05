@@ -10,6 +10,8 @@
 
 #include "multitask/core.h"
 
+#include "memory/pages.h"
+
 #define RASPBERRY_PI 3
 
 // 32-bit: void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags)
@@ -58,12 +60,9 @@ void kernel_main(uint64_t atag_ptr32, uint64_t x1, uint64_t x2, uint64_t x3)
 
 	*(uint32_t*)0xE0 = &setupStack;
 	sendCoreEvent();
+
+	initMemory(atag_ptr32);
+
 	//*(uint32_t*)0xE8 = &multicoreFunction2;
-
-	delay(100000);
-
-	int jeff = 0;
-	for (int i = 0; i < 1000000000; ++i) { jeff = bob; }
-	uart_dec(jeff);
 	//	uart_putc(uart_getc());
 }

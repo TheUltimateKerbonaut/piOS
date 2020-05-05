@@ -9,6 +9,4 @@ static inline void sendCoreEvent()
 
 extern void setupStack();
 
-extern int bob;
-
 #endif
