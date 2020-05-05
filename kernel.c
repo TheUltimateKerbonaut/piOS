@@ -4,8 +4,11 @@
 #include "mbox.h"
 #include "io/uart.h"
 #include "io/atag.h"
+#include "io/clock.h"
 
 #include "gfx/framebuffer.h"
+
+#include "multitask/core.h"
 
 #define RASPBERRY_PI 3
 
@@ -53,6 +56,14 @@ void kernel_main(uint64_t atag_ptr32, uint64_t x1, uint64_t x2, uint64_t x3)
 		uart_hex(framebufferStatus, 1);
 	}
 
-	while (1)  //{ uart_print("Hello, kernel World!\r\n"); }
-		uart_putc(uart_getc());
+	*(uint32_t*)0xE0 = &setupStack;
+	sendCoreEvent();
+	//*(uint32_t*)0xE8 = &multicoreFunction2;
+
+	delay(100000);
+
+	int jeff = 0;
+	for (int i = 0; i < 1000000000; ++i) { jeff = bob; }
+	uart_dec(jeff);
+	//	uart_putc(uart_getc());
 }

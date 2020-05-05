@@ -8,12 +8,13 @@ _start:
     and     x1, x1, #3
     cbz     x1, 2f
     // cpu id > 0, stop
-1:  wfe
+1:  
+    wfe
     b       1b
 2:  // cpu id == 0
 
     // set stack before our code
-    ldr     x1, =_start
+    ldr     x1, =__stack_start__core0
     mov     sp, x1
 
     // clear bss
@@ -25,8 +26,14 @@ _start:
     cbnz    w2, 3b
 
     // jump to C code, should not return
+4:  
     mov x0, 0x100
-4:  bl      kernel_main
+    bl      kernel_main
     // for failsafe, halt this core too
     b       1b
 
+.global setupStack
+setupStack:
+    ldr x1, =__stack_start__core1
+    mov sp, x1
+    b initCore
