@@ -27,7 +27,7 @@ SECTIONS
     __data_start = .;
     .data :
     {
-        *(.data)
+        *(.data .data.*)
     }
     . = ALIGN(4096); /* align to page size */
     __data_end = .;

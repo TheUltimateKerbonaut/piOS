@@ -19,4 +19,6 @@ struct page
 
 void initMemory(uint32_t atagPointer);
 
+uint32_t allocatePage(void);
+
 #endif

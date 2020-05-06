@@ -3,17 +3,22 @@
 #include "../stdlib.h"
 
 extern int __end; // Defined in linker.ld as the end of the kernel
+extern int __text_end;
 
 static struct page* pageListArray;
+
+static uint32_t memorySize;
+static uint32_t pageSize;
+static uint32_t numPages;
 
 void initMemory(uint32_t atagPointer)
 {
     // Get memory and page size
-    uint32_t memorySize = getMemorySize((struct atag*)atagPointer);
-    uint32_t pageSize = getPageSize((struct atag*)atagPointer);
+    memorySize = getMemorySize((struct atag*)atagPointer);
+    pageSize = getPageSize((struct atag*)atagPointer);
 
     // Work out how many pages we need
-    uint32_t numPages = memorySize / pageSize;
+    numPages = memorySize / pageSize;
     uart_printi("Initialising memory with page size ");
     uart_dec(pageSize);
     uart_printi(" bytes - ");
@@ -43,6 +48,19 @@ void initMemory(uint32_t atagPointer)
         pageListArray[i].flags.allocated = 0;
     }
 
-    uart_print("done");
+}
 
+uint32_t allocatePage(void)
+{
+
+    for (uint32_t i = 0; i < numPages; ++i)
+    {
+        if (!pageListArray[i].flags.allocated && !pageListArray[i].flags.kernel)
+        {
+            //uint32_t pageLocation = pageListArray[i].virtualAddress;
+            //bzero((uint32_t*)pageLocation, pageSize);
+            //return 1;
+        }
+    }
+    return 0;
 }
