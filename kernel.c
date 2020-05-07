@@ -61,7 +61,7 @@ void kernel_main(uint64_t atag_ptr32, uint64_t x1, uint64_t x2, uint64_t x3)
 		uart_hex(framebufferStatus, 1);
 	}
 
-	*(uint32_t*)0xE0 = &setupStack;
+	*(size_t*)0xE0 = (size_t) &setupStack;
 	sendCoreEvent();
 
 

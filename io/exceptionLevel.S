@@ -31,7 +31,7 @@ onException:
     eret
 
 5:
-    ldr     x1, =__stack_start_core0__
+    ldr     x1, =__EL1_stack_core0
     mov     sp, x1
 6:
     mov     sp, x1

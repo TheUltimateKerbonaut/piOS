@@ -59,7 +59,7 @@ int initFramebuffer()
         fbResolutionX = mailbox[5];   
         fbResolutionY = mailbox[6];   
         fbPitch = mailbox[33];
-        fbAddress = (void*)((uint64_t)mailbox[28]);
+        fbAddress = (size_t)((uint32_t)mailbox[28]);
         fbColourDepth = mailbox[20];
         uart_printi("Successfully constructed framebuffer with resolution ");
         uart_dec(fbResolutionX);

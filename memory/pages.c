@@ -6,14 +6,14 @@ extern int __end; // Defined in linker.ld as the end of the kernel
 
 static struct page* pageListArray;
 
-static uint32_t memorySize;
+static unsigned int memorySize;
 static uint32_t pageSize;
 static uint32_t numPages;
 
 //void initMemory(uint32_t atagPointer) {}
 
 
-void initMemory(uint32_t atagPointer)
+void initMemory(size_t atagPointer)
 {
     // Get memory and page size
     memorySize = getMemorySize((struct atag*)atagPointer);
@@ -30,10 +30,10 @@ void initMemory(uint32_t atagPointer)
     // Allocate enough space for our page data
     uint32_t pageArrayLength = sizeof(struct page) * numPages;
     pageListArray = (struct page*)&__end;
-    bzero(&pageListArray, pageArrayLength);
+    //bzero(&pageListArray, pageArrayLength);
 
     // Allocate space for the kernel
-    uint32_t kernelPages = (((uint32_t)&__end) + pageArrayLength) / pageSize;
+    uint32_t kernelPages = (((size_t)&__end) + pageArrayLength) / pageSize;
     int i;
     for (i = 0; i < kernelPages; ++i)
     {

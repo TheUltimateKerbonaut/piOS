@@ -3,6 +3,7 @@
 
 #include "../io/atag.h"
 #include <stdint.h>
+#include <stddef.h>
 
 struct pageFlag
 {
@@ -17,7 +18,7 @@ struct page
     struct pageFlag flags;
 };
 
-void initMemory(uint32_t atagPointer);
+void initMemory(size_t atagPointer);
 
 uint32_t allocatePage(void);
 

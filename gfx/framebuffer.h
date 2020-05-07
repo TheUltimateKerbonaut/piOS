@@ -1,10 +1,14 @@
 #include <stdint.h>
+#include <stddef.h>
+
+#ifndef FRAMEBUFFER_H
+#define FRAMEBUFFER_H
 
 int fbResolutionX;
 int fbResolutionY;
 int fbColourDepth;
 
-uint32_t fbAddress;
+size_t fbAddress;
 uint32_t fbSize;
 uint32_t fbPitch;
 
@@ -23,3 +27,5 @@ static inline uint32_t getColour(int r, int g, int b) // 16 bit - max 0xFFFF
 {
     return (r << 16 | g << 8 | b);
 }   
+
+#endif
