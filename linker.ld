@@ -3,14 +3,13 @@ OUTPUT_ARCH(aarch64)
 ENTRY(_start)
 SECTIONS
 {
+
 	/*
 	 * First and formost we need the .init section, containing the code to 
      * be run first. We allow room for the ATAGs and stack and conform to 
-     * the bootloader's expectation by putting this code at 0x8000.
+     * the bootloader's expectation by putting this code at 0x80000 (the entry point).
 	 */
-	.init 0x80000 : {
-		KEEP(*(.init))
-	}
+	. = 0x80000;
 
 	/* 
 	 * Next we put the rest of the code.
@@ -18,6 +17,7 @@ SECTIONS
 	.text : {
 		. = ALIGN(4);
 		 __text_start__ = .;     	/* Label in case we want address of text section start */
+		KEEP(*(.text.boot))
 		*(.text .text.*)
 		 __text_end__ = .;      	/* Label in case we want address of text section end */
 	}

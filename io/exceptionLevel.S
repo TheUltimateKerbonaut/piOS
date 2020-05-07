@@ -1,4 +1,4 @@
-.section ".text"
+.section ".text.boot"
 
 #include "exceptionRegisters.h"
 

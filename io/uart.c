@@ -6,15 +6,15 @@
 #include "clock.h"
 
 // Memory-Mapped I/O output
-static inline void mmio_write(size_t reg, uint32_t data)
+static inline void mmio_write(uint32_t reg, uint32_t data)
 {
-	*(volatile size_t*)reg = data;
+	*(volatile uint32_t*)reg = data;
 }
  
 // Memory-Mapped I/O input
-static inline uint32_t mmio_read(size_t reg)
+static inline uint32_t mmio_read(uint32_t reg)
 {
-	return *(volatile size_t*)reg;
+	return *(volatile uint32_t*)reg;
 }
  
 enum
@@ -95,7 +95,7 @@ void uart_init(uint8_t raspi)
 	// Set it to 3Mhz so that we can consistently set the baud rate
 	if (raspi >= 3) {
 		// UART_CLOCK = 40000000;
-		uint32_t r = (((uint32_t)(size_t)(&mbox) & ~0xF) | 8);
+		unsigned int r = (((unsigned int)(&mbox) & ~0xF) | 8);
 		// wait until we can talk to the VC
 		while ( mmio_read(MBOX_STATUS) & 0x80000000 ) { }
 		// send our message to property channel and wait for the response

@@ -4,6 +4,8 @@
 
 _start:
 
+    //b 0x1234560
+
     // read cpu id, stop slave cores
     mrs     x1, mpidr_el1
     and     x1, x1, #3
@@ -15,7 +17,7 @@ _start:
 2:  // cpu id == 0
 
     // set stack before our code
-    ldr     x1, =__stack_start_core0__
+    ldr     x1, =__EL2_stack_core0
     mov     sp, x1
 
     // clear bss
