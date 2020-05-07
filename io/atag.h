@@ -34,8 +34,8 @@ struct atag
     };
 };
 
-struct atag_mem* a_mem;
-struct atag_core* a_core;
+static struct atag_mem* a_mem;
+static struct atag_core* a_core;
 
 int populateFromAtag(struct atag* tag);
 uint32_t getMemorySize(struct atag* tag);

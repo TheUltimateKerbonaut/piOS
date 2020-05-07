@@ -4,20 +4,6 @@
 #ifndef FRAMEBUFFER_H
 #define FRAMEBUFFER_H
 
-int fbResolutionX;
-int fbResolutionY;
-int fbColourDepth;
-
-size_t fbAddress;
-uint32_t fbSize;
-uint32_t fbPitch;
-
-uint32_t fbTextRows;
-uint32_t fbTextColumns;
-
-uint32_t fbTextX;
-uint32_t fbTextY;
-
 int initFramebuffer();
 void fbSetPixel(int x, int y, uint32_t colour);
 void fbWriteChar(char character);

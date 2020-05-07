@@ -30,7 +30,7 @@ void initMemory(size_t atagPointer)
     // Allocate enough space for our page data
     uint32_t pageArrayLength = sizeof(struct page) * numPages;
     pageListArray = (struct page*)&__end;
-    //bzero(&pageListArray, pageArrayLength);
+    bzero(&pageListArray, pageArrayLength);
 
     // Allocate space for the kernel
     uint32_t kernelPages = (((size_t)&__end) + pageArrayLength) / pageSize;
@@ -52,7 +52,7 @@ void initMemory(size_t atagPointer)
 
 }
 
-/*
+
 uint32_t allocatePage(void)
 {
     for (uint32_t i = 0; i < numPages; ++i)
@@ -66,4 +66,3 @@ uint32_t allocatePage(void)
     }
     return 0;
 }
-*/

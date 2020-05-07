@@ -7,6 +7,20 @@
 #define HEIGHT 480
 #define DEPTH 32
 
+static int fbResolutionX;
+static int fbResolutionY;
+static int fbColourDepth;
+
+static size_t fbAddress;
+static uint32_t fbSize;
+static uint32_t fbPitch;
+
+static uint32_t fbTextRows;
+static uint32_t fbTextColumns;
+
+static uint32_t fbTextX;
+static uint32_t fbTextY;
+
 int initFramebuffer()
 {
     mailbox[0] = 35*4;
