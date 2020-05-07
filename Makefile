@@ -6,15 +6,19 @@ CFLAGS = -Wall -O2 -ffreestanding -nostdlib -nostartfiles
 
 all: kernel8.img
 
-boot.o: boot.s
-	aarch64-elf-gcc $(CFLAGS) -c boot.s -o boot.o
+boot.o: boot.S
+	aarch64-elf-gcc $(CFLAGS) -c boot.S -o boot.o
+
+io/exceptionLevelA.o: io/exceptionLevel.S
+	aarch64-elf-gcc $(CFLAGS) -c io/exceptionLevel.S -o io/exceptionLevelA.o
+
 
 %.o: %.c
 	aarch64-elf-gcc $(CFLAGS) -c $< -o $@
 
-kernel8.img: boot.o $(OBJS)
+kernel8.img: boot.o io/exceptionLevelA.o $(OBJS)
 
-	aarch64-elf-ld -nostdlib -nostartfiles boot.o $(OBJS) -T linker.ld -o kernel8.elf
+	aarch64-elf-ld -z max-page-size=0x1000 -nostdlib -nostartfiles boot.o $(OBJS) io/exceptionLevelA.o -T linker.ld -o kernel8.elf
 	aarch64-elf-objcopy -O binary kernel8.elf kernel8.img
 
 clean:
@@ -28,4 +32,4 @@ transfer: kernel8.img
 	#java -jar ../Raspbootin64Client-master/Raspbootin64Client.jar /dev/ttyUSB0 ../piOS/kernel8.img
 
 emulate: kernel8.img
-	qemu-system-aarch64 -M raspi3 -serial stdio -kernel kernel8.img
+	qemu-system-aarch64 -M raspi3 -serial stdio -kernel kernel8.img #-d int

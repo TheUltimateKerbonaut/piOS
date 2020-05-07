@@ -5,6 +5,7 @@
 #include "io/uart.h"
 #include "io/atag.h"
 #include "io/clock.h"
+#include "io/exceptionLevel.h"
 
 #include "gfx/framebuffer.h"
 
@@ -23,6 +24,8 @@ void kernel_main(uint64_t atag_ptr32, uint64_t x1, uint64_t x2, uint64_t x3)
 	uart_print(" Welcome to Pi OS!");
 	uart_print("===================");
 	uart_print("");	
+
+	getExceptionState();
 
 	createSerialMailbox();
 	uint32_t serialMailbox = sendMailbox(ArmToVC);
@@ -60,6 +63,7 @@ void kernel_main(uint64_t atag_ptr32, uint64_t x1, uint64_t x2, uint64_t x3)
 
 	*(uint32_t*)0xE0 = &setupStack;
 	sendCoreEvent();
+
 
 	initMemory(atag_ptr32);
 

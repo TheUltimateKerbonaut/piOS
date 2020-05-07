@@ -3,13 +3,15 @@
 #include "../stdlib.h"
 
 extern int __end; // Defined in linker.ld as the end of the kernel
-extern int __text_end;
 
 static struct page* pageListArray;
 
 static uint32_t memorySize;
 static uint32_t pageSize;
 static uint32_t numPages;
+
+//void initMemory(uint32_t atagPointer) {}
+
 
 void initMemory(uint32_t atagPointer)
 {
@@ -28,7 +30,7 @@ void initMemory(uint32_t atagPointer)
     // Allocate enough space for our page data
     uint32_t pageArrayLength = sizeof(struct page) * numPages;
     pageListArray = (struct page*)&__end;
-    //bzero(&pageList, pageArrayLength);
+    bzero(&pageListArray, pageArrayLength);
 
     // Allocate space for the kernel
     uint32_t kernelPages = (((uint32_t)&__end) + pageArrayLength) / pageSize;
@@ -50,17 +52,18 @@ void initMemory(uint32_t atagPointer)
 
 }
 
+/*
 uint32_t allocatePage(void)
 {
-
     for (uint32_t i = 0; i < numPages; ++i)
     {
         if (!pageListArray[i].flags.allocated && !pageListArray[i].flags.kernel)
         {
-            //uint32_t pageLocation = pageListArray[i].virtualAddress;
-            //bzero((uint32_t*)pageLocation, pageSize);
-            //return 1;
+            uint32_t pageLocation = pageListArray[i].virtualAddress;
+            bzero((uint32_t*)pageLocation, pageSize);
+            return 1;
         }
     }
     return 0;
 }
+*/
