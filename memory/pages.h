@@ -20,6 +20,9 @@ struct page
 
 void initMemory(size_t atagPointer);
 
-uint32_t allocatePage(void);
+size_t allocatePage();
+void freePage(size_t address);
+
+size_t getFreePages();
 
 #endif

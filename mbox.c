@@ -15,6 +15,8 @@
 
 */
 
+volatile unsigned int mailbox[36];
+
 #define VIDEOCORE_MBOX  (0x3F000000+0x0000B880)
 #define MBOX_READ       ((volatile unsigned int*)(VIDEOCORE_MBOX+0x0))
 #define MBOX_POLL       ((volatile unsigned int*)(VIDEOCORE_MBOX+0x10))

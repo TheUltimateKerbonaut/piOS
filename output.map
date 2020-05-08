@@ -1,9 +1,4 @@
 
-Allocating common symbols
-Common symbol       size              file
-
-mailbox             0x90              mbox.o
-
 Discarded input sections
 
  .comment       0x0000000000000000       0x25 mbox.o
@@ -14,6 +9,7 @@ Discarded input sections
  .comment       0x0000000000000000       0x25 io/atag.o
  .comment       0x0000000000000000       0x25 gfx/framebuffer.o
  .comment       0x0000000000000000       0x25 multitask/core.o
+ .comment       0x0000000000000000       0x25 memory/heap.o
  .comment       0x0000000000000000       0x25 memory/pages.o
 
 Memory Configuration
@@ -32,11 +28,12 @@ LOAD io/exceptionLevel.o
 LOAD io/atag.o
 LOAD gfx/framebuffer.o
 LOAD multitask/core.o
+LOAD memory/heap.o
 LOAD memory/pages.o
 LOAD io/exceptionLevelA.o
                 0x0000000000080000                . = 0x80000
 
-.text           0x0000000000080000      0xe94
+.text           0x0000000000080000     0x1374
                 0x0000000000080000                . = ALIGN (0x4)
                 0x0000000000080000                __text_start__ = .
  *(.text.boot)
@@ -87,147 +84,159 @@ LOAD io/exceptionLevelA.o
  .text          0x0000000000080cd8        0xc multitask/core.o
                 0x0000000000080cd8                initCore
  *fill*         0x0000000000080ce4        0x4 
- .text          0x0000000000080ce8      0x1ac memory/pages.o
-                0x0000000000080ce8                initMemory
-                0x0000000000080e18                allocatePage
- .text          0x0000000000080e94        0x0 io/exceptionLevelA.o
-                0x0000000000080e94                __text_end__ = .
+ .text          0x0000000000080ce8      0x1e8 memory/heap.o
+                0x0000000000080ce8                kmalloc
+                0x0000000000080dd8                kfree
+                0x0000000000080e88                initKernelHeap
+ .text          0x0000000000080ed0      0x4a4 memory/pages.o
+                0x0000000000080ed0                allocatePage
+                0x0000000000080fd8                freePage
+                0x0000000000081080                initMemory
+                0x0000000000081338                getFreePages
+ .text          0x0000000000081374        0x0 io/exceptionLevelA.o
+                0x0000000000081374                __text_end__ = .
 
-.rodata         0x0000000000080e98      0x5f0
-                0x0000000000080e98                . = ALIGN (0x4)
-                0x0000000000080e98                __rodata_start__ = .
+.rodata         0x0000000000081378      0x718
+                0x0000000000081378                . = ALIGN (0x4)
+                0x0000000000081378                __rodata_start__ = .
  *(.rodata .rodata.*)
  .rodata.str1.8
-                0x0000000000080e98       0xdd kernel.o
+                0x0000000000081378       0xdd kernel.o
                                          0xe5 (size before relaxing)
- *fill*         0x0000000000080f75        0x3 
+ *fill*         0x0000000000081455        0x3 
  .rodata.str1.8
-                0x0000000000080f78        0x3 io/uart.o
+                0x0000000000081458        0x3 io/uart.o
                                           0xb (size before relaxing)
- *fill*         0x0000000000080f7b        0x5 
+ *fill*         0x000000000008145b        0x5 
  .rodata.str1.8
-                0x0000000000080f80       0x1c io/exceptionLevel.o
+                0x0000000000081460       0x1c io/exceptionLevel.o
                                          0x23 (size before relaxing)
- *fill*         0x0000000000080f9c        0x4 
- .rodata        0x0000000000080fa0      0x400 gfx/framebuffer.o
+ *fill*         0x000000000008147c        0x4 
+ .rodata        0x0000000000081480      0x400 gfx/framebuffer.o
  .rodata.str1.8
-                0x00000000000813a0       0x8d gfx/framebuffer.o
+                0x0000000000081880       0x8d gfx/framebuffer.o
                                          0x9d (size before relaxing)
- *fill*         0x000000000008142d        0x3 
+ *fill*         0x000000000008190d        0x3 
  .rodata.str1.8
-                0x0000000000081430       0x13 multitask/core.o
- *fill*         0x0000000000081443        0x5 
+                0x0000000000081910       0x13 multitask/core.o
+ *fill*         0x0000000000081923        0x5 
  .rodata.str1.8
-                0x0000000000081448       0x40 memory/pages.o
-                                         0x3f (size before relaxing)
-                0x0000000000081488                __rodata_end__ = .
+                0x0000000000081928       0x15 memory/heap.o
+ *fill*         0x000000000008193d        0x3 
+ .rodata.str1.8
+                0x0000000000081940      0x150 memory/pages.o
+                                        0x15a (size before relaxing)
+                0x0000000000081a90                __rodata_end__ = .
 
-.data           0x0000000000081490       0x24
-                0x0000000000081490                . = ALIGN (0x4)
-                0x0000000000081490                __data_start__ = .
+.data           0x0000000000081a90       0x24
+                0x0000000000081a90                . = ALIGN (0x4)
+                0x0000000000081a90                __data_start__ = .
  *(.data .data.*)
- .data          0x0000000000081490        0x0 boot.o
- .data          0x0000000000081490        0x0 mbox.o
- .data          0x0000000000081490        0x0 stdlib.o
- .data          0x0000000000081490        0x0 kernel.o
- .data          0x0000000000081490       0x24 io/uart.o
-                0x0000000000081490                mbox
- .data          0x00000000000814b4        0x0 io/exceptionLevel.o
- .data          0x00000000000814b4        0x0 io/atag.o
- .data          0x00000000000814b4        0x0 gfx/framebuffer.o
- .data          0x00000000000814b4        0x0 multitask/core.o
- .data          0x00000000000814b4        0x0 memory/pages.o
- .data          0x00000000000814b4        0x0 io/exceptionLevelA.o
-                0x00000000000814b4                __data_end__ = .
+ .data          0x0000000000081a90        0x0 boot.o
+ .data          0x0000000000081a90        0x0 mbox.o
+ .data          0x0000000000081a90        0x0 stdlib.o
+ .data          0x0000000000081a90        0x0 kernel.o
+ .data          0x0000000000081a90       0x24 io/uart.o
+                0x0000000000081a90                mbox
+ .data          0x0000000000081ab4        0x0 io/exceptionLevel.o
+ .data          0x0000000000081ab4        0x0 io/atag.o
+ .data          0x0000000000081ab4        0x0 gfx/framebuffer.o
+ .data          0x0000000000081ab4        0x0 multitask/core.o
+ .data          0x0000000000081ab4        0x0 memory/heap.o
+ .data          0x0000000000081ab4        0x0 memory/pages.o
+ .data          0x0000000000081ab4        0x0 io/exceptionLevelA.o
+                0x0000000000081ab4                __data_end__ = .
 
-.data1          0x00000000000814b4        0xc
-                0x00000000000814c0                . = ALIGN (0x10)
- *fill*         0x00000000000814b4        0xc 
-                0x00000000000814c0                __data1_start__ = .
+.data1          0x0000000000081ab4        0xc
+                0x0000000000081ac0                . = ALIGN (0x10)
+ *fill*         0x0000000000081ab4        0xc 
+                0x0000000000081ac0                __data1_start__ = .
  *(.data1 .data1.*)
-                0x00000000000814c0                __data1_end__ = .
+                0x0000000000081ac0                __data1_end__ = .
 
-.bss            0x00000000000814c0       0xe0
-                0x00000000000814c0                . = ALIGN (0x4)
-                0x00000000000814c0                __bss_start__ = .
+.bss            0x0000000000081ac0       0xe8
+                0x0000000000081ac0                . = ALIGN (0x4)
+                0x0000000000081ac0                __bss_start__ = .
  *(.bss .bss.*)
- .bss           0x00000000000814c0        0x0 boot.o
- .bss           0x00000000000814c0        0x0 mbox.o
- .bss           0x00000000000814c0        0x0 stdlib.o
- .bss           0x00000000000814c0        0x0 kernel.o
- .bss           0x00000000000814c0        0x0 io/uart.o
- .bss           0x00000000000814c0        0x0 io/exceptionLevel.o
- .bss           0x00000000000814c0       0x10 io/atag.o
- .bss           0x00000000000814d0       0x28 gfx/framebuffer.o
- .bss           0x00000000000814f8        0x0 multitask/core.o
- .bss           0x00000000000814f8       0x18 memory/pages.o
- .bss           0x0000000000081510        0x0 io/exceptionLevelA.o
+ .bss           0x0000000000081ac0        0x0 boot.o
+ .bss           0x0000000000081ac0       0x90 mbox.o
+                0x0000000000081ac0                mailbox
+ .bss           0x0000000000081b50        0x0 stdlib.o
+ .bss           0x0000000000081b50        0x0 kernel.o
+ .bss           0x0000000000081b50        0x0 io/uart.o
+ .bss           0x0000000000081b50        0x0 io/exceptionLevel.o
+ .bss           0x0000000000081b50       0x10 io/atag.o
+ .bss           0x0000000000081b60       0x28 gfx/framebuffer.o
+ .bss           0x0000000000081b88        0x0 multitask/core.o
+ .bss           0x0000000000081b88        0x8 memory/heap.o
+                0x0000000000081b88                heapSegmentListHead
+ .bss           0x0000000000081b90       0x18 memory/pages.o
+ .bss           0x0000000000081ba8        0x0 io/exceptionLevelA.o
  *(COMMON)
- COMMON         0x0000000000081510       0x90 mbox.o
-                0x0000000000081510                mailbox
-                0x00000000000815a0                __bss_end__ = .
-                0x00000000000000e0                __bss_size__ = (__bss_end__ - __bss_start__)
+                0x0000000000081ba8                __bss_end__ = .
+                0x00000000000000e8                __bss_size__ = (__bss_end__ - __bss_start__)
 
-.stack_core0    0x00000000000815a0     0x8200
-                0x00000000000815a0                . = ALIGN (0x10)
-                0x00000000000815a0                __stack_start_core0__ = .
-                0x00000000000855a0                . = (. + 0x4000)
- *fill*         0x00000000000815a0     0x4000 
-                0x00000000000855a0                __EL0_stack_core0 = .
-                0x00000000000895a0                . = (. + 0x4000)
- *fill*         0x00000000000855a0     0x4000 
-                0x00000000000895a0                __EL1_stack_core0 = .
-                0x00000000000897a0                . = (. + 0x200)
- *fill*         0x00000000000895a0      0x200 
-                0x00000000000897a0                __EL2_stack_core0 = .
-                0x00000000000897a0                __stack_end_core0__ = .
+.stack_core0    0x0000000000081ba8     0x8208
+                0x0000000000081bb0                . = ALIGN (0x10)
+ *fill*         0x0000000000081ba8        0x8 
+                0x0000000000081bb0                __stack_start_core0__ = .
+                0x0000000000085bb0                . = (. + 0x4000)
+ *fill*         0x0000000000081bb0     0x4000 
+                0x0000000000085bb0                __EL0_stack_core0 = .
+                0x0000000000089bb0                . = (. + 0x4000)
+ *fill*         0x0000000000085bb0     0x4000 
+                0x0000000000089bb0                __EL1_stack_core0 = .
+                0x0000000000089db0                . = (. + 0x200)
+ *fill*         0x0000000000089bb0      0x200 
+                0x0000000000089db0                __EL2_stack_core0 = .
+                0x0000000000089db0                __stack_end_core0__ = .
 
-.stack_core1    0x00000000000897a0      0x800
-                0x00000000000897a0                . = ALIGN (0x10)
-                0x00000000000897a0                __stack_start_core1__ = .
-                0x00000000000899a0                . = (. + 0x200)
- *fill*         0x00000000000897a0      0x200 
-                0x00000000000899a0                __EL0_stack_core1 = .
-                0x0000000000089da0                . = (. + 0x400)
- *fill*         0x00000000000899a0      0x400 
-                0x0000000000089da0                __EL1_stack_core1 = .
-                0x0000000000089fa0                . = (. + 0x200)
- *fill*         0x0000000000089da0      0x200 
-                0x0000000000089fa0                __EL2_stack_core1 = .
-                0x0000000000089fa0                __stack_end_core1__ = .
+.stack_core1    0x0000000000089db0      0x800
+                0x0000000000089db0                . = ALIGN (0x10)
+                0x0000000000089db0                __stack_start_core1__ = .
+                0x0000000000089fb0                . = (. + 0x200)
+ *fill*         0x0000000000089db0      0x200 
+                0x0000000000089fb0                __EL0_stack_core1 = .
+                0x000000000008a3b0                . = (. + 0x400)
+ *fill*         0x0000000000089fb0      0x400 
+                0x000000000008a3b0                __EL1_stack_core1 = .
+                0x000000000008a5b0                . = (. + 0x200)
+ *fill*         0x000000000008a3b0      0x200 
+                0x000000000008a5b0                __EL2_stack_core1 = .
+                0x000000000008a5b0                __stack_end_core1__ = .
 
-.stack_core2    0x0000000000089fa0      0x800
-                0x0000000000089fa0                . = ALIGN (0x10)
-                0x0000000000089fa0                __stack_start_core2__ = .
-                0x000000000008a1a0                . = (. + 0x200)
- *fill*         0x0000000000089fa0      0x200 
-                0x000000000008a1a0                __EL0_stack_core2 = .
-                0x000000000008a5a0                . = (. + 0x400)
- *fill*         0x000000000008a1a0      0x400 
-                0x000000000008a5a0                __EL1_stack_core2 = .
-                0x000000000008a7a0                . = (. + 0x200)
- *fill*         0x000000000008a5a0      0x200 
-                0x000000000008a7a0                __EL2_stack_core2 = .
-                0x000000000008a7a0                __stack_end_core2__ = .
+.stack_core2    0x000000000008a5b0      0x800
+                0x000000000008a5b0                . = ALIGN (0x10)
+                0x000000000008a5b0                __stack_start_core2__ = .
+                0x000000000008a7b0                . = (. + 0x200)
+ *fill*         0x000000000008a5b0      0x200 
+                0x000000000008a7b0                __EL0_stack_core2 = .
+                0x000000000008abb0                . = (. + 0x400)
+ *fill*         0x000000000008a7b0      0x400 
+                0x000000000008abb0                __EL1_stack_core2 = .
+                0x000000000008adb0                . = (. + 0x200)
+ *fill*         0x000000000008abb0      0x200 
+                0x000000000008adb0                __EL2_stack_core2 = .
+                0x000000000008adb0                __stack_end_core2__ = .
 
-.stack_core3    0x000000000008a7a0      0x800
-                0x000000000008a7a0                . = ALIGN (0x10)
-                0x000000000008a7a0                __stack_start_core3__ = .
-                0x000000000008a9a0                . = (. + 0x200)
- *fill*         0x000000000008a7a0      0x200 
-                0x000000000008a9a0                __EL0_stack_core3 = .
-                0x000000000008ada0                . = (. + 0x400)
- *fill*         0x000000000008a9a0      0x400 
-                0x000000000008ada0                __EL1_stack_core3 = .
-                0x000000000008afa0                . = (. + 0x200)
- *fill*         0x000000000008ada0      0x200 
-                0x000000000008afa0                __EL2_stack_core3 = .
-                0x000000000008afa0                __stack_end_core3__ = .
+.stack_core3    0x000000000008adb0      0x800
+                0x000000000008adb0                . = ALIGN (0x10)
+                0x000000000008adb0                __stack_start_core3__ = .
+                0x000000000008afb0                . = (. + 0x200)
+ *fill*         0x000000000008adb0      0x200 
+                0x000000000008afb0                __EL0_stack_core3 = .
+                0x000000000008b3b0                . = (. + 0x400)
+ *fill*         0x000000000008afb0      0x400 
+                0x000000000008b3b0                __EL1_stack_core3 = .
+                0x000000000008b5b0                . = (. + 0x200)
+ *fill*         0x000000000008b3b0      0x200 
+                0x000000000008b5b0                __EL2_stack_core3 = .
+                0x000000000008b5b0                __stack_end_core3__ = .
 
-.heap           0x000000000008afa0        0x0
-                0x000000000008afa0                . = ALIGN (0x4)
-                0x000000000008afa0                __heap_start__ = .
-                0x000000000008afa0                __end = .
+.heap           0x000000000008b5b0        0x0
+                0x000000000008b5b0                . = ALIGN (0x4)
+                0x000000000008b5b0                __heap_start__ = .
+                0x000000000008b5b0                __end = .
                 [!provide]                        PROVIDE (end, .)
 
 /DISCARD/

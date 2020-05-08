@@ -2,7 +2,7 @@
 #OBJS = $(SRCS:.c=.o)
 SRCS := $(wildcard *.c io/*.c gfx/*.c multitask/*.c memory/*.c)
 OBJS := $(SRCS:.c=.o)
-CFLAGS = -Wall -O2 -ffreestanding -nostdlib -nostartfiles
+CFLAGS = -Wall -O2 -ffreestanding -nostdlib -nostartfiles -fno-common
 
 all: kernel8.img
 
