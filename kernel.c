@@ -67,6 +67,7 @@ void kernel_main(uint64_t atag_ptr32, uint64_t x1, uint64_t x2, uint64_t x3)
 
 	initMemory(atag_ptr32);
 
+	while (1) uart_putc(uart_getc());
 	//*(uint32_t*)0xE8 = &multicoreFunction2;
 	//	uart_putc(uart_getc());
 }

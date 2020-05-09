@@ -3,6 +3,7 @@
 
 typedef int lock;
 
-extern int attemptLock(lock* attemptedLock);
-
+void spinInit(lock* lock);
+void spinLock(lock* lock);
+void spinUnlock(lock* lock);
 #endif

@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "atag.h": "c",
-        "framebuffer.h": "c"
+        "framebuffer.h": "c",
+        "lock.h": "c",
+        "core.h": "c"
     }
 }

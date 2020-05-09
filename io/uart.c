@@ -5,6 +5,11 @@
  
 #include "clock.h"
 
+#include "../multitask/lock.h"
+
+typedef int lock;
+lock uartLock;
+
 // Memory-Mapped I/O output
 static inline void mmio_write(uint32_t reg, uint32_t data)
 {
@@ -116,7 +121,10 @@ void uart_init(uint8_t raspi)
 	                       (1 << 7) | (1 << 8) | (1 << 9) | (1 << 10));
  
 	// Enable UART0, receive & transfer part of UART.
-	mmio_write(UART0_CR, (1 << 0) | (1 << 8) | (1 << 9));
+	mmio_write(UART0_CR, (1 << 0) | (1 << 8) | (1 << 9)); 
+
+	// Setup atomic lock
+	spinInit(uartLock);
 }
  
 void uart_putc(unsigned char c)
@@ -135,19 +143,32 @@ unsigned char uart_getc()
  
 void uart_print(const char* str)
 {
+	spinLock(uartLock);
+
 	for (size_t i = 0; str[i] != '\0'; i ++)
 		uart_putc((unsigned char)str[i]);
-	uart_printi("\r\n");
+	
+	uart_putc('\r');
+	uart_putc('\n');
+	uart_putc('\0');
+
+	spinUnlock(uartLock);
 }
 
 void uart_printi(const char* str)
 {
+	spinLock(uartLock);
+
 	for (size_t i = 0; str[i] != '\0'; i ++)
 		uart_putc((unsigned char)str[i]);
+
+	spinUnlock(uartLock);
 }
 
 void uart_dec(unsigned int x)
 {
+	spinLock(uartLock);
+
 	unsigned int i = x;
 	unsigned int dig=1;
  	while (i/=10) dig++;
@@ -162,12 +183,18 @@ void uart_dec(unsigned int x)
 	arr[arrDig] = '\0';
 	
 
-	uart_printi(arr);
+	for (size_t i = 0; arr[i] != '\0'; i ++)
+		uart_putc((unsigned char)arr[i]);
+
+	spinUnlock(uartLock);
 }
 
 void uart_hex(unsigned int x, uint8_t formatting)
 {
-	if (formatting) uart_printi("0x");
+	spinLock(uartLock);
+
+	if (formatting) uart_putc('0');
+	if (formatting) uart_putc('x');
 
 	unsigned int i = x;
 	unsigned int dig=1;
@@ -188,6 +215,11 @@ void uart_hex(unsigned int x, uint8_t formatting)
 	arr[arrDig] = '\0';
 	
 
-	uart_printi(arr);
-	if (formatting) uart_printi("\r\n");
+	for (size_t i = 0; arr[i] != '\0'; i ++)
+		uart_putc((unsigned char)arr[i]);
+	if (formatting) uart_putc('\r');
+	if (formatting) uart_putc('\n');
+	if (formatting) uart_putc('\0');
+
+	spinUnlock(uartLock);
 }

@@ -34,6 +34,8 @@ void initMemory(size_t atagPointer)
     pageListArray = (struct page*)&__end;
     bzero(pageListArray, pageArrayLength);
 
+    uart_print("bob");
+
     // Allocate space for the kernel
     kernelPages = (((size_t)&__end) + pageArrayLength) / pageSize;
     int i;
@@ -103,7 +105,7 @@ size_t allocatePage()
             pageListArray[i].flags.kernel = 1;
 
             size_t physicalLocation = &pageListArray[i];
-            //bzero((size_t*)physicalLocation, pageSize);
+            bzero((size_t*)physicalLocation + sizeof(struct page), pageSize - sizeof(struct page));
             
             uart_printi("Page allocated at address ");
             uart_hex(physicalLocation, 1);

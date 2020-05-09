@@ -2,7 +2,7 @@
 #OBJS = $(SRCS:.c=.o)
 SRCS := $(wildcard *.c io/*.c gfx/*.c multitask/*.c memory/*.c)
 OBJS := $(SRCS:.c=.o)
-CFLAGS = -Wall -O2 -ffreestanding -nostdlib -nostartfiles -fno-common
+CFLAGS = -Wall -O2 -ffreestanding -nostdlib -nostartfiles -fno-common -march=armv8-a -mcpu=cortex-a53 -mtune=cortex-a53
 
 all: kernel8.img
 
@@ -12,11 +12,10 @@ boot.o: boot.S
 io/exceptionLevelA.o: io/exceptionLevel.S
 	aarch64-elf-gcc $(CFLAGS) -c io/exceptionLevel.S -o io/exceptionLevelA.o
 
-
 %.o: %.c
 	aarch64-elf-gcc $(CFLAGS) -c $< -o $@
 
-kernel8.img: boot.o io/exceptionLevelA.o $(OBJS)
+kernel8.img: boot.o io/exceptionLevelA.o multitask/lock.o $(OBJS)
 
 	aarch64-elf-ld -Map=output.map  -z max-page-size=0x1000 -nostdlib -nostartfiles boot.o $(OBJS) io/exceptionLevelA.o -T linker.ld -o kernel8.elf
 	aarch64-elf-objcopy -O binary kernel8.elf kernel8.img
