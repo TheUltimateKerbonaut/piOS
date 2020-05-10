@@ -12,6 +12,7 @@
 #include "multitask/core.h"
 
 #include "memory/pages.h"
+#include "memory/mmu.h"
 
 #define RASPBERRY_PI 3
 
@@ -26,6 +27,8 @@ void kernel_main(uint64_t atag_ptr32, uint64_t x1, uint64_t x2, uint64_t x3)
 	uart_print("");	
 
 	getExceptionState();
+
+	mmu_init();
 
 	createSerialMailbox();
 	uint32_t serialMailbox = sendMailbox(ArmToVC);

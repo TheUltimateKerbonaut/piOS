@@ -3,6 +3,7 @@
         "atag.h": "c",
         "framebuffer.h": "c",
         "lock.h": "c",
-        "core.h": "c"
+        "core.h": "c",
+        "type_traits": "c"
     }
 }

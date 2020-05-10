@@ -17,6 +17,7 @@ static size_t kernelPages;
 
 void initMemory(size_t atagPointer)
 {
+
     // Get memory and page size
     memorySize = getMemorySize((struct atag*)atagPointer);
     pageSize = getPageSize((struct atag*)atagPointer);
@@ -31,10 +32,8 @@ void initMemory(size_t atagPointer)
 
     // Allocate enough space for our page data
     size_t pageArrayLength = sizeof(struct page) * numPages;
-    pageListArray = (struct page*)&__end;
+    pageListArray = (struct page*)&__end + pageSize; // Add page size for MMU?
     bzero(pageListArray, pageArrayLength);
-
-    uart_print("bob");
 
     // Allocate space for the kernel
     kernelPages = (((size_t)&__end) + pageArrayLength) / pageSize;

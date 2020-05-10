@@ -4,8 +4,6 @@
 
 _start:
 
-    //b 0x1234560
-
     // read cpu id, stop slave cores
     mrs     x1, mpidr_el1
     and     x1, x1, #3
@@ -46,4 +44,3 @@ setupStack:
     ldr x1, =__stack_start_core1__
     mov sp, x1
     b initCore
-    

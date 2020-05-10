@@ -12,7 +12,7 @@ getExceptionLevel:
 .global onException
 onException:
 
-    ldr x0, =SCTLR_VALUE_MMU_DISABLED // Binary flags disabling cache and MMU, and using little-endian
+    ldr x0, =SCTLR_VALUE_MMU_ENABLED // Binary flags configuring cache and MMU, and using little-endian
     msr sctlr_el1, x0 // Apply for all levels higher and equal to el1
 
     ldr x0, =HCR_VALUE // Used for hypervisor, but also controls execution state

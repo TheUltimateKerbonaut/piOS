@@ -35,8 +35,8 @@ SECTIONS
 	/* 
 	 * Next we put the data.
 	 */
+	. = ALIGN(4096); /* Align to page so MMU works */
 	.data : {
-		. = ALIGN(4);
 		 __data_start__ = .;     	/* Label in case we want address of data section start */
 		*(.data .data.*)
 		 __data_end__ = .;     		/* Label in case we want address of data section end */
@@ -116,6 +116,7 @@ SECTIONS
 	.heap :	{
      	. = ALIGN(4);
      	__heap_start__ = .;			/* Label in case we want address of heap section start */
+		 . = ALIGN(4096); /* Essential for MMU! */
     	__end = .; PROVIDE (end = .);/* Any memory from here is free to use so this is end of code and start of heap */
 	}
 
