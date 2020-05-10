@@ -19,6 +19,8 @@
 // 32-bit: void kernel_main(uint32_t r0, uint32_t r1, uint32_t atags)
 void kernel_main(uint64_t atag_ptr32, uint64_t x1, uint64_t x2, uint64_t x3)
 {
+	mmu_init();
+
 	uart_init(RASPBERRY_PI);
 	
 	uart_print("===================");
@@ -27,8 +29,6 @@ void kernel_main(uint64_t atag_ptr32, uint64_t x1, uint64_t x2, uint64_t x3)
 	uart_print("");	
 
 	getExceptionState();
-
-	mmu_init();
 
 	createSerialMailbox();
 	uint32_t serialMailbox = sendMailbox(ArmToVC);
@@ -67,10 +67,11 @@ void kernel_main(uint64_t atag_ptr32, uint64_t x1, uint64_t x2, uint64_t x3)
 	*(size_t*)0xE0 = (size_t) &setupStack;
 	sendCoreEvent();
 
-
 	initMemory(atag_ptr32);
 
-	while (1) uart_putc(uart_getc());
-	//*(uint32_t*)0xE8 = &multicoreFunction2;
-	//	uart_putc(uart_getc());
+	while (1)
+	{
+        for (int i = 0; i < 0xFFFFFF; ++i) asm volatile("nop");
+        fbWriteString("Core 0 says hi!");
+	}
 }
